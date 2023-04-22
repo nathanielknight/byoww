@@ -5,47 +5,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BYO Wordle</title>
+    <title>BYOWW</title>
     <style>
         body {
-            font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-            max-width: 40em;
+            max-width: 50em;
             margin: auto;
-            text-align: center;
-        }
+font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 
-        #guess {
-            display: flex;
-            justify-content: center;
-            flex-direction: row;
-        }
-
-        .letter {
-            width: 1em;
-            height: 1em;
-            border-radius: 2px;
-            border: 1px solid gray;
-            display: inline-block;
-            text-transform: capitalize;
-            padding: 0.1em;
-            margin: 0.1em 0;
-        }
-
-        .out-of-place {
-            background-color: gold;
-        }
-
-        .correct {
-            background-color: greenyellow;
         }
     </style>
+    <link rel="stylesheet" href="./byoww.css">
 </head>
 
 <body>
-    <div id="attempts"></div>
-    <div id="guess"></div>
-    <div id="msg"></div>
-    <script src="app.js" type="module"></script>
+    <nav>
+        <a href="/">⬅️ Back</a>
+    </nav>
+    <div id="byoww"></div>
+    <script type="module">
+        import { init } from "./app.js";
+        const root = document.getElementById("byoww");
+        init(root, "svooyrfabex");
+    </script>
 </body>
 
 </html>

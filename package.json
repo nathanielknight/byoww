@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --outfile=dist/app.js",
+    "build": "esbuild src/main.ts --minify --sourcemap --outfile=dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

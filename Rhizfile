@@ -3,3 +3,6 @@
   (rec-copy "static" "dist")
   (exec pnpm run build)
 )
+
+(task "serve"
+  (exec py -m http.server 3030 --directory dist))

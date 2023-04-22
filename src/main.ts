@@ -1,8 +1,27 @@
 type AppEvent = "backspace" | "submit" | ["addLetter", string]
 
-const guessDiv = document.getElementById("guess") as HTMLDivElement;
-const attemptsDiv = document.getElementById("attempts") as HTMLDivElement;
-const msgDiv = document.getElementById("msg") as HTMLDivElement;
+let guessDiv: HTMLDivElement;
+let attemptsDiv: HTMLDivElement;
+let msgDiv: HTMLDivElement;
+let keyboardDiv: HTMLDivElement;
+
+
+
+const solvedEvent = new CustomEvent("solved");
+
+function solved(): void {
+    guessDiv.replaceChildren();
+    keyboardDiv.replaceChildren();
+    msgDiv.innerText = "Solved :)";
+    document.dispatchEvent(solvedEvent);
+
+}
+
+function rot13(message: string): string {
+    const originalAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const cipher = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM"
+    return message.replace(/[a-z]/gi, letter => cipher[originalAlpha.indexOf(letter)])
+}
 
 class Model {
     solution: string;
@@ -36,6 +55,7 @@ class Model {
             return;
         }
         const attempt = document.createElement("div");
+        attempt.classList.add("row");
         const attemptLetters = this.currentGuess.map(
             (c, i) => {
                 const e = document.createElement("span");
@@ -53,7 +73,7 @@ class Model {
         attempt.replaceChildren(...attemptLetters);
         attemptsDiv.appendChild(attempt);
         if (this.currentGuess.join("") === this.solution) {
-            this.solved();
+            solved();
         } else {
             this.currentGuess = [];
             this.redrawGuess();
@@ -65,11 +85,6 @@ class Model {
             this.currentGuess.push(char);
             this.redrawGuess();
         }
-    }
-
-    solved(): void {
-        guessDiv.replaceChildren();
-        msgDiv.innerText = "Solved :)";
     }
 
     redrawGuess(): void {
@@ -93,8 +108,69 @@ class Model {
 const LETTERS = new Set("abcdefghijklmnopqrstuvwxyz");
 
 
-function init(solution: string) {
-    const model = new Model(solution);
+function addKeyboard(keyboard: HTMLDivElement, model: Model): void {
+    const rows = [
+        "qwertyuiop",
+        "asdfghjkl",
+        "zxcvbnm",
+    ];
+
+    function controlButton(text: string, action: () => void) {
+        const btn = document.createElement("span")
+        btn.classList.add("letter", "button")
+        btn.innerText = text;
+        btn.onclick = action;
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("control");
+        rowDiv.appendChild(btn)
+        keyboard.appendChild(rowDiv);
+    }
+
+    controlButton("␡", () => model.update("backspace"));
+
+    rows.forEach(letters => {
+        const row = document.createElement("div");
+        row.classList.add("row");
+        Array.from(letters).forEach(letter => {
+            const button = document.createElement("span");
+            button.classList.add("letter", "button");
+            button.innerHTML = letter.toUpperCase();
+            button.onclick = () => { model.update(["addLetter", letter]) }
+            row.appendChild(button);
+        })
+        keyboard.appendChild(row);
+    })
+
+    controlButton("⏎", () => model.update("submit"));
+}
+
+function insertSkeleton(root: HTMLDivElement): void {
+    function addDiv(id: string, classes?: string[]) {
+        const div = document.createElement("div")
+        div.id = id;
+        if (classes != undefined) {
+            div.classList.add(...classes);
+        }
+        root.appendChild(div);
+    }
+    addDiv("attempts");
+    addDiv("guess", ["row"]);
+    root.appendChild(document.createElement("hr"));
+    addDiv("msg");
+    addDiv("keyboard");
+}
+
+export function init(root: HTMLDivElement, solution: string) {
+    insertSkeleton(root);
+
+    guessDiv = document.getElementById("guess") as HTMLDivElement;
+    attemptsDiv = document.getElementById("attempts") as HTMLDivElement;
+    msgDiv = document.getElementById("msg") as HTMLDivElement;
+    keyboardDiv = document.getElementById("keyboard") as HTMLDivElement;
+
+    const model = new Model(rot13(solution));
+
+    addKeyboard(keyboardDiv, model);
 
     function listenKey(evt: KeyboardEvent): void {
         if (evt.key === "Backspace") {
@@ -108,6 +184,7 @@ function init(solution: string) {
         }
     }
     document.addEventListener("keydown", listenKey);
+    document.addEventListener("solved", () => {
+        document.removeEventListener("keydown", listenKey);
+    })
 }
-
-init("samsonite");

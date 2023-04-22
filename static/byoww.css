@@ -1,0 +1,52 @@
+#byoww {
+    font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+    font-size: 150%;
+    max-width: 30em;
+    margin: auto;
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.letter {
+    width: 1em;
+    height: 1em;
+    border-radius: 4px;
+    border: 1px solid gray;
+    display: inline-block;
+    text-transform: capitalize;
+    padding: 0.1em;
+    margin: 0.1em 0.05em;
+    ;
+}
+
+.out-of-place {
+    background-color: gold;
+    font-style: italic;
+}
+
+.correct {
+    background-color: greenyellow;
+    font-weight: bold;
+}
+
+.control {
+    text-align: right;
+}
+
+#keyboard {
+    max-width: 16em;
+    margin: auto;
+}
+
+.button {
+    margin: 0.1em;
+}
+
+.button:hover {
+    background-color: lightblue;
+}

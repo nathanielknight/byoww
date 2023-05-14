@@ -27,13 +27,17 @@ class Model {
     solution: string;
     guesses: string[];
     currentGuess: string[];
-    letters: Set<string>;
+    letters: Map<string, number>;
+
 
     constructor(solution: string) {
         this.solution = solution;
         this.currentGuess = [];
         this.guesses = [];
-        this.letters = new Set(solution);
+        this.letters = new Map();
+        Array.from(solution).forEach(c =>
+            this.letters.set(c, 1 + (this.letters.get(c) ?? 0))
+        );
         this.redrawGuess();
     }
 
@@ -56,6 +60,17 @@ class Model {
         }
         const attempt = document.createElement("div");
         attempt.classList.add("row");
+
+        const correctCounts = this.correctCounts(this.currentGuess);
+        const cluesGiven: Map<string, number> = new Map();
+
+        const outOfPlace: (c: string) => boolean = (c) => {
+            const needed = this.letters.get(c) ?? 0;
+            const correct = correctCounts.get(c) ?? 0;
+            const clued = cluesGiven.get(c) ?? 0;
+            return clued + correct < needed;
+        };
+
         const attemptLetters = this.currentGuess.map(
             (c, i) => {
                 const e = document.createElement("span");
@@ -63,8 +78,9 @@ class Model {
                 e.classList.add("letter");
                 if (c === this.solution[i]) {
                     e.classList.add("correct");
-                } else if (this.letters.has(c)) {
+                } else if (outOfPlace(c)) {
                     e.classList.add("out-of-place");
+                    cluesGiven.set(c, 1 + (cluesGiven.get(c) ?? 0));
                 }
                 attempt.appendChild(e);
                 return e;
@@ -78,6 +94,16 @@ class Model {
             this.currentGuess = [];
             this.redrawGuess();
         }
+    }
+
+    correctCounts(guess: string[]): Map<string, number> {
+        const results = new Map();
+        guess.forEach((c, i) => {
+            if (this.solution[i] == c) {
+                results.set(c, 1 + (results.get(c) ?? 0));
+            }
+        });
+        return results;
     }
 
     addLetter(char: string): void {

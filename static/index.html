@@ -19,14 +19,19 @@ font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droi
 
 <body>
     <nav>
-        <a href="/">⬅️ Back</a>
+        <a href="/"></a>
     </nav>
+    <div id="byoww">
+        <h1>Bring-Your-Own-Word Wordle-like</h1>
+
+        <input type="text" id="challengeinput" pattern="[A-Z]+" title="Only ASCII letters" />
+        <p>Unaccented Latin letters only, solution will be all uppercase.</p>
+        <p><a id="challengelink" href=""></a></p>
+    </div>
+    <!-- todo: header -->
+    <!-- todo: footer -->
     <div id="byoww"></div>
-    <script type="module">
-        import { init } from "./app.js";
-        const root = document.getElementById("byoww");
-        init(root, "svooyrfabex");
-    </script>
+    <script type="module" src="./app.js"></script>
 </body>
 
 </html>

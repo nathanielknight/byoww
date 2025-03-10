@@ -17,10 +17,10 @@ function solved(): void {
 
 }
 
-function rot13(message: string): string {
-    const originalAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    const cipher = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM"
-    return message.replace(/[a-z]/gi, letter => cipher[originalAlpha.indexOf(letter)])
+export function rot13(message: string): string {
+    const originalAlpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const cipher = "NOPQRSTUVWXYZABCDEFGHIJKLM"
+    return message.replace(/[A-Z]/gi, letter => cipher[originalAlpha.indexOf(letter)])
 }
 
 class Model {
@@ -31,7 +31,7 @@ class Model {
 
 
     constructor(solution: string) {
-        this.solution = solution;
+        this.solution = solution.toUpperCase();
         this.currentGuess = [];
         this.guesses = [];
         this.letters = new Map();
@@ -49,7 +49,7 @@ class Model {
             this.submit()
         } else {
             const [_, char] = event;
-            this.addLetter(char)
+            this.addLetter(char.toUpperCase())
             this.redrawGuess();
         }
     }
@@ -131,7 +131,7 @@ class Model {
     }
 }
 
-const LETTERS = new Set("abcdefghijklmnopqrstuvwxyz");
+const LETTERS = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
 
 function addKeyboard(keyboard: HTMLDivElement, model: Model): void {
@@ -205,8 +205,8 @@ export function init(root: HTMLDivElement, solution: string) {
         if (evt.key === "Enter") {
             model.update("submit");
         }
-        if (LETTERS.has(evt.key.toLowerCase())) {
-            model.update(["addLetter", evt.key.toLowerCase()]);
+        if (LETTERS.has(evt.key.toUpperCase())) {
+            model.update(["addLetter", evt.key.toUpperCase()]);
         }
     }
     document.addEventListener("keydown", listenKey);
